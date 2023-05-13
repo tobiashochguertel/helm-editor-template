@@ -70,6 +70,7 @@ app.post('/template', async (req, res) => {
     let result = "";
     const parsed = jsYaml.loadAll(withSourceOutput);
     parsed.forEach((item: any) => {
+      console.log(item.Source);
       if (item['Source'] === selection.filename) {
         // Remove Source field, which we added to know which content belongs to which file.
         delete item.Source;
@@ -78,6 +79,7 @@ app.post('/template', async (req, res) => {
       }
     });
     res.send(result);
+    // fs.rmSync("./public/chart/", { recursive: true, force: true });
     return;
   });
   // res.json({ "result": "ok" });
