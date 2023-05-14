@@ -1,5 +1,6 @@
-FROM node:14-slim
+FROM node:19-alpine
 
+RUN apk add --no-cache helm
 WORKDIR /app
 
 # Setup a path for using local npm packages
@@ -14,6 +15,6 @@ COPY ./ /app
 
 RUN yarn run build
 
-EXPOSE 3001
+EXPOSE 3002
 
 CMD ["yarn", "run", "start"]
