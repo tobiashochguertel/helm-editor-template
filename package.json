@@ -1,6 +1,6 @@
 {
   "name": "helm-template-service",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "author": "",
   "description": "",
   "license": "ISC",
@@ -43,7 +43,8 @@
   "scripts": {
     "build": "npx tsc",
     "start": "node dist/index.js",
-    "dev": "concurrently \"npx tsc --watch\" \"nodemon -q dist/index.js\"",
-    "lint": "eslint . --fix"
+    "lint": "eslint . --fix",
+    "compile": "tsc && yarn run start",
+    "dev": "npx nodemon -e ts  --exec \"yarn run compile\""
   }
 }

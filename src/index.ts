@@ -24,9 +24,9 @@ type Content = {
 }
 
 const app: Express = express()
-app.use(bodyParser.text());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.text({ limit: '50mb' }));
+app.use(bodyParser.json({ limit: '50mb' }));
+app.use(bodyParser.urlencoded({ extended: false, limit: '50mb' }));
 app.use(express.static('public'));
 
 app.post('/template', async (req, res) => {
@@ -37,8 +37,31 @@ app.post('/template', async (req, res) => {
   }
   const directories = Array.from(chart.values()).filter((item: Content) => item.type === "directory");
   const files = Array.from(chart.values()).filter((item: Content) => item.type === "file");
-  directories.forEach((directory: Content) => { fs.mkdirSync(`./public/chart/${directory.filename}`, { recursive: true }); });
-  files.forEach((file: Content) => { fs.writeFileSync(`./public/chart/${file.filename}`, file.content || ""); });
+  directories.forEach((directory: Content) => {
+    try {
+      fs.mkdirSync(`./public/chart/${directory.filename}`, { recursive: true });
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.log(`Error: ${directory.filename}: ${err.message}`)
+      }
+      if (!(err instanceof Error)) {
+        console.log(err);
+      }
+    }
+  });
+  files.forEach((file: Content) => {
+
+    try {
+      fs.writeFileSync(`./public/chart/${file.filename}`, file.content ?? "");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        console.log(`Error: ${file.filename}: ${err.message}`)
+      }
+      if (!(err instanceof Error)) {
+        console.log(err);
+      }
+    }
+  });
 
   const selection: Content = req.body.selection as Content;
   fs.writeFileSync("./public/chart/" + selection.filename, selection.content || "");
@@ -80,7 +103,6 @@ app.post('/template', async (req, res) => {
     });
     res.send(result);
     // fs.rmSync("./public/chart/", { recursive: true, force: true });
-    return;
   });
   // res.json({ "result": "ok" });
 });
