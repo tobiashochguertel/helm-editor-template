@@ -2,8 +2,9 @@ import express, { Express } from 'express';
 import dotenv from 'dotenv';
 import bodyParser from 'body-parser';
 import { exec } from "child_process";
-import jsYaml from 'js-yaml';
+// import jsYaml from 'js-yaml';
 import fs from 'fs';
+const jsYaml = require('js-yaml');
 
 
 dotenv.config();
